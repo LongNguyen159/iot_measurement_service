@@ -1,0 +1,19 @@
+from sqlalchemy.orm import Session
+
+import models, schemas
+
+def get_driver(db: Session, driver_id: int):
+    return db.query(models.Driver).filter(models.Driver.driverId == driver_id).first()
+
+def get_all_drivers(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Driver).offset(skip).limit(limit).all()
+
+# def get_driver_result(db: Session, driver_id: int):
+#     return db.query(models.Results).filter(models.Results.driverId == driver_id)
+
+def get_all_results(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Results).offset(skip).limit(limit).all()
+
+
+def get_driver_result(db: Session, driver_id: int, skip: int = 0, limit: int = 100):
+    return db.query(models.Results).filter(models.Results.driverId == driver_id).offset(skip).limit(limit).all()
