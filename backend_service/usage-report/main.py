@@ -52,17 +52,36 @@ async def read_driver_records(driverId: int, skip: int = 0, limit: int = 100, db
     ]
 
 @app.get("/results")
-async def read_all_results(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    all_results = crud.get_all_results(db, skip=skip, limit=limit)
-    return [
-        {
-            "result_id": result.driverStandingsId,
-            "driver_id": result.driver.driverId,
-            "driver_name": result.driver.forename + " " + result.driver.surname,
-            "driver_code": result.driver.code,
-            "race": result.race.name,
-            "year": result.race.year,
-            "points": result.points,
-        }
-        for result in all_results
+async def read_yearly_results(year: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    season_results = crud.get_all_results(db, year= year, skip=skip, limit=limit)
+    race_names = set(result.race.name for result in season_results)
+    driver_points = {}
+    
+    for result in season_results:
+        driver_name = result.driver.forename + " " + result.driver.surname
+        race_name = result.race.name
+        points = result.points
+        
+        if driver_name not in driver_points:
+            driver_points[driver_name] = {race: 0 for race in race_names}
+        
+        driver_points[driver_name][race_name] = points
+    
+    data_for_plot = [
+        {"driver": driver, "points": list(points.values())}
+        for driver, points in driver_points.items()
     ]
+    
+    return {"race_names": list(race_names), "data": data_for_plot}
+    # return [
+    #     {
+    #         "result_id": result.driverStandingsId,
+    #         "driver_id": result.driver.driverId,
+    #         "driver_name": result.driver.forename + " " + result.driver.surname,
+    #         "driver_code": result.driver.code,
+    #         "race": result.race.name,
+    #         "year": result.race.year,
+    #         "points": result.points,
+    #     }
+    #     for result in all_results
+    # ]

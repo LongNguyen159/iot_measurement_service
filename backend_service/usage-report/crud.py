@@ -11,8 +11,8 @@ def get_all_drivers(db: Session, skip: int = 0, limit: int = 100):
 # def get_driver_result(db: Session, driver_id: int):
 #     return db.query(models.Results).filter(models.Results.driverId == driver_id)
 
-def get_all_results(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Results).offset(skip).limit(limit).all()
+def get_all_results(db: Session, year: int, skip: int = 0, limit: int = 100):
+    return db.query(models.Results).join(models.Race).filter(models.Race.year == year).offset(skip).limit(limit).all()
 
 
 def get_driver_result(db: Session, driver_id: int, skip: int = 0, limit: int = 100):
