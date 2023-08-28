@@ -26,4 +26,3 @@ class Result(ResultBase):
     driverId: int
     class Config:
         orm_mode = True
-

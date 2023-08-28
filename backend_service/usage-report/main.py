@@ -1,8 +1,11 @@
-from typing import Union
+from typing import Union, List
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from fastapi.middleware.cors import CORSMiddleware
 
 import crud, models, schemas
 from database import SessionLocal, engine
@@ -10,6 +13,16 @@ from database import SessionLocal, engine
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
@@ -19,9 +32,9 @@ def get_db():
         db.close()
 
 
-@app.get("/")
-async def hello_world():
-    return {"Hello": "World"}
+@app.get("/years/")
+async def read_years_value(db: Session = Depends(get_db)):
+    return crud.get_years_value(db)
 
 @app.get("/drivers")
 async def read_all_drivers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -51,7 +64,7 @@ async def read_driver_records(driverId: int, skip: int = 0, limit: int = 100, db
         for record in records
     ]
 
-@app.get("/results")
+@app.get("/results/{year}")
 async def read_yearly_results(year: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     season_results = crud.get_all_results(db, year= year, skip=skip, limit=limit)
     race_names = set(result.race.name for result in season_results)
@@ -73,15 +86,25 @@ async def read_yearly_results(year: int, skip: int = 0, limit: int = 100, db: Se
     ]
     
     return {"race_names": list(race_names), "data": data_for_plot}
-    # return [
-    #     {
-    #         "result_id": result.driverStandingsId,
-    #         "driver_id": result.driver.driverId,
-    #         "driver_name": result.driver.forename + " " + result.driver.surname,
-    #         "driver_code": result.driver.code,
-    #         "race": result.race.name,
-    #         "year": result.race.year,
-    #         "points": result.points,
-    #     }
-    #     for result in all_results
-    # ]
+
+
+
+# @app.get("/plot-yearly-results/{year}")
+# async def plot_yearly_results(year: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     yearly_data = await read_yearly_results(year, skip, limit, db)
+    
+#     fig = make_subplots(specs=[[{"secondary_y": True}]])
+    
+#     for driver_data in yearly_data["data"]:
+#         fig.add_trace(
+#             go.Scatter(x=yearly_data["race_names"], y=driver_data["points"], mode="lines", name=driver_data["driver"]),
+#             secondary_y=False,
+#         )
+    
+#     fig.update_layout(
+#         title=f"Driver Points in {year}",
+#         xaxis_title="Races",
+#         yaxis_title="Points",
+#     )
+    
+#     return fig.show()
