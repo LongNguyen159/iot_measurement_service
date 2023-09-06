@@ -46,4 +46,4 @@ class Results(Base):
     Temperature = Column(Float)
     DeviceID = Column(Integer, ForeignKey('Sensors.ID'))
 
-    device = relationship("Device", back_populates="results")
+    device = relationship("Device", back_populates="results", lazy='joined')
