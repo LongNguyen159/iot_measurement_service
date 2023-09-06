@@ -34,11 +34,6 @@ export class LinePlotComponent implements OnInit, OnDestroy {
   }
 
   updateChart(): void {
-    this.usageReportService.getDailyResults('2023-09-06').subscribe((data: Results[]) => {
-      
-    })
-
-
     // this.usageReportService.getYearlyResults(this.year).subscribe(data => {
     //   this.chartOption = {
     //     title: {

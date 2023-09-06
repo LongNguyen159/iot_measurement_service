@@ -9,8 +9,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { PiePlotComponent } from './feature/usage-report/components/pie-plot/pie-plot.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
-import { UsageReportPageComponent } from './feature/usage-report/pages/usage-report-page/usage-report-page.component';
-import { HomepageComponent } from './feature/usage-report/pages/homepage/homepage.component';
+import { UsageReportPageComponent } from './pages/usage-report-page/usage-report-page.component';
+import { HomepageComponent } from './pages/homepage/homepage.component';
 @NgModule({
   declarations: [
     AppComponent,
