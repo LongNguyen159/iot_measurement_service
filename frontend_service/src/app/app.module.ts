@@ -7,20 +7,27 @@ import { LinePlotComponent } from './feature/usage-report/components/line-plot/l
 import { HttpClientModule } from  '@angular/common/http';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { PiePlotComponent } from './feature/usage-report/components/pie-plot/pie-plot.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material/button';
+import { UsageReportPageComponent } from './feature/usage-report/pages/usage-report-page/usage-report-page.component';
+import { HomepageComponent } from './feature/usage-report/pages/homepage/homepage.component';
 @NgModule({
   declarations: [
     AppComponent,
     LinePlotComponent,
     PiePlotComponent,
+    UsageReportPageComponent,
+    HomepageComponent,
   ],
   imports: [
+    MatButtonModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
     }),
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
