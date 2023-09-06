@@ -5,8 +5,6 @@ export function groupDataByDevice(data: any[]) {
         const deviceId = item.deviceId
         if (!accumulator[deviceId]) {
             accumulator[deviceId] = {
-                name: `Device ${deviceId}`,
-                type: 'line',
                 data: [],
             }
         }
@@ -16,3 +14,13 @@ export function groupDataByDevice(data: any[]) {
     console.log(groupedData)
     return groupedData
 }
+
+// export function processGroupDataIntoSeriesData(groupedData: any) {
+//     const seriesData = Object.values(groupedData).map((item: any) => {
+//         name: item.name,
+//         type: item.type,
+//         data: item.data.map(([time: string, temperature])=> {
+
+//         })
+//     })
+// }

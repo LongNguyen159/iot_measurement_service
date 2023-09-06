@@ -10,14 +10,14 @@ import { Results } from 'src/app/feature/usage-report/models/results';
   styleUrls: ['./usage-report-page.component.scss']
 })
 export class UsageReportPageComponent implements OnInit {
-  groupDataByDevice: any[] = []  
+  groupDataByDevice: any
   
 
   constructor(private usageReportService: UsageReportService) {}
 
   ngOnInit(): void {
-    this.usageReportService.getDailyResults('2023-09-06').subscribe((data: Results[]) => {
-      console.log(data)
+    this.usageReportService.getDailyResults('2023-09-05').subscribe((data: Results[]) => {
+      this.groupDataByDevice = groupDataByDevice(data)
     })
   }
 }
