@@ -13,12 +13,47 @@ import * as echarts from 'echarts'
 })
 export class LinePlotComponent implements OnInit, OnDestroy, OnChanges {
   chartOption: EChartsOption;
+  updateOption: EChartsOption;
 
   @Input() plotData: any
 
   constructor(private http: HttpClient, private usageReportService: UsageReportService) {}
 
   ngOnInit(): void {
+    this.chartOption = {
+      title: {
+        text: 'Daily Temperature',
+      },
+      xAxis: {
+        type: 'time',
+        name: 'Time',
+        nameLocation: 'middle',
+        nameGap: 50,
+        axisPointer: {
+          show: true
+        }
+      },
+      yAxis: {
+        type: 'value',
+        name: 'Temperature (°C)',
+        nameLocation: 'middle',
+        nameGap: 50,
+        axisPointer: {
+          show: false
+        }
+      },
+      legend: {
+        show: true
+      },
+      tooltip: {
+        show: true,
+        trigger: 'axis'
+      },
+      dataZoom: {
+        type: 'inside'
+      },
+      series: []
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -37,32 +72,13 @@ export class LinePlotComponent implements OnInit, OnDestroy, OnChanges {
       ])),
     }));
 
-    console.log('from plot component:', this.plotData)
-    console.log(series)
-
-    this.chartOption = {
-      title: {
-        text: 'Daily Temperature',
-      },
-      xAxis: {
-        type: 'time',
-        name: 'Time',
-        nameLocation: 'middle',
-        nameGap: 50,
-      },
-      yAxis: {
-        type: 'value',
-        name: 'Temperature (°C)',
-        nameLocation: 'middle',
-        nameGap: 50,
-      },
-      legend: {
-        show: true
-      },
+    this.updateOption = {
       series: series
     }
+
   }
   
   ngOnDestroy(): void {
   }
 }
+

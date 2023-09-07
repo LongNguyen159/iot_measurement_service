@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, interval, startWith, mergeMap } from 'rxjs';
 import { Results } from '../models/results';
 
 @Injectable({
@@ -8,6 +8,7 @@ import { Results } from '../models/results';
 })
 export class UsageReportService {
   apiEndpoint = 'http://localhost:8000'
+  pollingInterval = 5000;
 
   constructor(private http: HttpClient) { }
 
@@ -28,6 +29,12 @@ export class UsageReportService {
     }));
   }
 
+  pollingResults(date: string): Observable<Results[]> {
+    return interval(this.pollingInterval).pipe(
+      startWith(0),
+      mergeMap(() => this.getDailyResults(date))
+    )
+  }
 
   // getYearlyResults(year: number): Observable<any> {
   //   return this.http.get(`${this.apiEndpoint}/results/${year}?skip=0&limit=100`).pipe(
