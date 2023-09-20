@@ -23,7 +23,7 @@ client.loop_start()
 
 try:
     while True:
-        deviceID = "1140"
+        deviceID = "4000"
         temperature = simulate_temperature()
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         temperature_with_timestamp = f"{deviceID}_{timestamp}_{temperature:.2f}"
@@ -31,7 +31,7 @@ try:
         print(f"{deviceID}: {temperature:.2f}")
         # client.publish(topic, deviceID)
         client.publish(topic, temperature_with_timestamp)
-        time.sleep (1800)
+        time.sleep (5)
 except KeyboardInterrupt:
     print("\nProgram terminated")
     client.loop_stop()

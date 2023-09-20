@@ -1,10 +1,15 @@
 import paho.mqtt.client as mqtt
 import time
-import sqlite3
 import json
-
+from sqlalchemy.orm import Session
+from database import SessionLocal, engine
+from models import Results, Device
+from sqlalchemy import Column, ForeignKey, Integer, String, Float, DateTime
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+   
 def on_connect (client, userdata, flags, rc):
-    # client.subscribe(discocovery_topic)
     client.subscribe("temperature")
 
 devices = {}
@@ -13,24 +18,30 @@ def on_message (client, userdata, msg):
    
     client_data = (msg.payload.decode())        # decode payload as a string
    
-
     process_data  = client_data.split("_")
     deviceID = process_data[0]
     timestamp = process_data[1]
     temperature = process_data[2]
-    
+     
     print(f"{timestamp}  {temperature}")
-
     time.sleep(2)
 
-    conn = sqlite3.connect ('temperature_db.sqlite')
-    cursor = conn.cursor()
+    DATABASE_URL = "sqlite:///temperature_db.sqlite"
 
-    cursor.execute('INSERT INTO Resource (DeviceID, Timestamp, Temperature) VALUES (?, ?, ?)', (deviceID, timestamp, temperature))
-    # cursor.execute('INSERT INTO Sensors (DeviceID) VALUES (?)', (deviceID,))
-    conn.commit()
+    engine = create_engine(DATABASE_URL)
+    
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    session = SessionLocal()
+    temperature_reading = Results()
+    temperature_reading.DeviceID = deviceID
+    temperature_reading.Timestamp = timestamp
+    temperature_reading.Temperature = temperature
 
-    conn.close()
+    session.add(temperature_reading)
+    session.commit()
+    session.rollback()
+        
+    session.close()
 
 broker_address = "192.168.188.27"
 broker_port = 1883
@@ -49,4 +60,5 @@ except KeyboardInterrupt:
     client.loop_stop()
     client.disconnect()
    
+
     
